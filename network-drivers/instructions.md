@@ -41,3 +41,22 @@ Damit können ARP Nachrichten an die MAC Adresse geschickt werden und die Verbin
 ```
 arping 192.168.122.x <- Adresse eines Containers
 ```
+
+## Container 
+
+Docker kann Container auch als Hosts definieren.
+Dadurch würde ein zweite Container den ersten Container als Host nutzen und sich seine Netzwerkeigenschaften, wie IP, Adapter und co., teilen.
+
+Kubernetes benutzt diesen Mechanismus um seine Pods zu erstellen.
+Dabei wird ein vom Nutzer unerkannter Container als Pod Container gestartet.
+Die eigentlichen App Container treten diesem dann bei.
+
+Selber testen kann man das mit:
+
+```bash
+docker run --rm -itd --name alpine1 alpine:latest &&
+docker run --rm -itd --name alpine2 --network container:alpine1 alpine:latest
+```
+
+Wenn man nun den zweiten Container mit `docker inspect alpine2` untersucht wird deutlich, dass dieser keinerlei Netzwerkkonfiguration besitzt.
+Allerdings unter dem Punkt Config sieht man als Host die ID des ersten Containers.
